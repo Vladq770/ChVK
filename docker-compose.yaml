@@ -1,0 +1,43 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:15beta3
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+  redis: 
+    image: redis:6.2.6-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+    command: --port 5555
+    ports:
+      - "5555:5555"
+
+  backend:
+    build: ./chvk
+    restart: always
+    command: python manage.py runserver 0.0.0.0:7000
+    ports:
+      - "7000:7000"
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - .env
+
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_value:
+  media_value:

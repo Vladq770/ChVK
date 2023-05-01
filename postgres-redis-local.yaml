@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres-local:
+    image: postgres:15beta3
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+  
+  redis: 
+    image: redis:6.2.6-alpine
+    command: --port 5555
+    ports:
+        - "5555:5555"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+
